@@ -1,10 +1,9 @@
-name: Deploy ASP.NET Core API to Azure
+name: PROD Despliegue Api Persona
 
 on:
   push:
     branches:
       - main
-      - DEV
   workflow_dispatch:
 
 env:
