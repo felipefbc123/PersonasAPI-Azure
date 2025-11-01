@@ -10,24 +10,40 @@ namespace PersonasAPI.Controllers
     public class PersonasController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<PersonasController> _logger;
 
-        public PersonasController(ApplicationDbContext context)
+        public PersonasController(ApplicationDbContext context, ILogger<PersonasController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/Personas
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Persona>>> GetPersonas(string? rut = null)
         {
-            if (rut == null)
+            try
             {
-                return await _context.Personas.ToListAsync();
-            }
+                _logger.LogInformation($"Attempting to get personas. RUT filter: {rut ?? "none"}");
 
-            var personas = await _context.Personas
-                .Where(p => p.RUT == rut)
-                .ToListAsync();
+                if (rut == null)
+                {
+                    var allPersonas = await _context.Personas.ToListAsync();
+                    _logger.LogInformation($"Retrieved {allPersonas.Count} personas");
+                    return allPersonas;
+                }
+
+                var personas = await _context.Personas
+                    .Where(p => p.RUT == rut)
+                    .ToListAsync();
+
+                _logger.LogInformation($"Found {personas.Count} personas with RUT: {rut}");
+
+                if (!personas.Any())
+                {
+                    _logger.LogWarning($"No personas found with RUT: {rut}");
+                    return NotFound($"No se encontró ninguna persona con el RUT: {rut}");
+                }
 
             if (!personas.Any())
             {
