@@ -10,6 +10,8 @@ env:
   AZURE_WEBAPP_NAME: ZeuzPersonasApi
   AZURE_WEBAPP_PACKAGE_PATH: './PersonasAPI'
   DOTNET_VERSION: '8.0.x'
+  AZURE_WEBAPP_RUNTIME: 'dotnet:8'
+  AZURE_WEBAPP_OS: 'windows'
 
 jobs:
   build-and-deploy:
@@ -38,3 +40,5 @@ jobs:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
         package: ${{env.DOTNET_ROOT}}/myapp
+        runtime-stack: ${{ env.AZURE_WEBAPP_RUNTIME }}
+        os-type: ${{ env.AZURE_WEBAPP_OS }}
