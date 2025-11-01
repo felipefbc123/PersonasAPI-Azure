@@ -1,0 +1,49 @@
+name: QA Despliegue Api Persona
+
+on:
+  push:
+    branches:
+      - desarrollo/v1
+  pull_request:
+    branches:
+      - desarrollo/v1
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal
+      
+    - name: Merge to QA
+      if: github.event_name == 'push' && github.ref == 'refs/heads/desarrollo/v1'
+      run: |
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        git fetch origin QA:QA
+        git checkout QA
+        git merge ${{ github.sha }} --no-ff -m "Merge desarrollo/v1 into QA"
+        git push origin QA
+        
+    - name: Deploy to Azure Web App (QA)
+      if: success() && github.event_name == 'push' && github.ref == 'refs/heads/desarrollo/v1'
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'ZeuzPersonaApiQA'  # Reemplaza con el nombre de tu App Service
+        slot-name: 'qa'  # Si tienes un slot de deployment para QA
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_QA }}  # Necesitarás configurar este secreto
+        package: './PersonasAPI/bin/Release/net8.0/publish'
