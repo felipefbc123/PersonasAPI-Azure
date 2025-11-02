@@ -1,16 +1,17 @@
 name: QA Despliegue Api Persona
 
 on:
-  push:
-    branches:
-      - desarrollo/v1
   pull_request:
     branches:
-      - desarrollo/v1
+      - QA
+    types: [opened, synchronize, reopened]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     
     steps:
     - uses: actions/checkout@v3
@@ -29,18 +30,8 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal
       
-    - name: Merge to QA
-      if: github.event_name == 'push' && github.ref == 'refs/heads/desarrollo/v1'
-      run: |
-        git config --global user.name 'GitHub Action'
-        git config --global user.email 'action@github.com'
-        git fetch origin QA:QA
-        git checkout QA
-        git merge ${{ github.sha }} --no-ff -m "Merge desarrollo/v1 into QA"
-        git push origin QA
-        
     - name: Deploy to Azure Web App (QA)
-      if: success() && github.event_name == 'push' && github.ref == 'refs/heads/desarrollo/v1'
+      if: github.event.pull_request.base.ref == 'QA'
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'ZeuzPersonaApiQA'  # Reemplaza con el nombre de tu App Service
