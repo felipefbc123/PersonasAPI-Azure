@@ -37,6 +37,7 @@ namespace PersonasAPI.Controllers
             return personas;
         }
 
+
         // GET: api/Personas/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Persona>> GetPersona(int id)
@@ -51,15 +52,7 @@ namespace PersonasAPI.Controllers
             return persona;
         }
 
-        // POST: api/Personas
-        [HttpPost]
-        public async Task<ActionResult<Persona>> PostPersona(Persona persona)
-        {
-            _context.Personas.Add(persona);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetPersona), new { id = persona.IDPersona }, persona);
-        }
 
         // PUT: api/Personas/5
         [HttpPut("{id}")]

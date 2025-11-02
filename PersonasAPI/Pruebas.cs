@@ -16,6 +16,7 @@ namespace PersonasAPI
         public int Sumar(int numero1, int numero2)
         {
             int resultado = numero1 + numero2;
+            double prueba = Math.PI+500; // Variable de prueba para verificar el uso de System
             return resultado;
         }
     }
