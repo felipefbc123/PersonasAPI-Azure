@@ -52,7 +52,15 @@ namespace PersonasAPI.Controllers
             return persona;
         }
 
+        // POST: api/Personas
+        [HttpPost]
+        public async Task<ActionResult<Persona>> PostPersona(Persona persona)
+        {
+            _context.Personas.Add(persona);
+            await _context.SaveChangesAsync();
 
+            return CreatedAtAction("GetPersona", new { id = persona.IDPersona }, persona);
+        }
 
         // PUT: api/Personas/5
         [HttpPut("{id}")]
