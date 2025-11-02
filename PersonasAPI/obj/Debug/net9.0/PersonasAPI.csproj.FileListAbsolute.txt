@@ -163,3 +163,4 @@ C:\Users\felipefbc\Downloads\ProyectoAzure\PersonasAPI\obj\Debug\net9.0\refint\P
 C:\Users\felipefbc\Downloads\ProyectoAzure\PersonasAPI\obj\Debug\net9.0\PersonasAPI.pdb
 C:\Users\felipefbc\Downloads\ProyectoAzure\PersonasAPI\obj\Debug\net9.0\PersonasAPI.genruntimeconfig.cache
 C:\Users\felipefbc\Downloads\ProyectoAzure\PersonasAPI\obj\Debug\net9.0\ref\PersonasAPI.dll
+C:\Users\felipefbc\Downloads\ProyectoAzure\PersonasAPI\obj\Debug\net9.0\PersonasAPI.sourcelink.json

@@ -1,0 +1,40 @@
+name: QA Despliegue Api Persona
+
+on:
+  pull_request:
+    branches:
+      - QA
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal
+      
+    - name: Deploy to Azure Web App (QA)
+      if: github.event.pull_request.base.ref == 'QA'
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'ZeuzPersonaApiQA'  # Reemplaza con el nombre de tu App Service
+        slot-name: 'qa'  # Si tienes un slot de deployment para QA
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_QA }}  # Necesitarás configurar este secreto
+        package: './PersonasAPI/bin/Release/net8.0/publish'
