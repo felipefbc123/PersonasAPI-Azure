@@ -48,6 +48,13 @@ builder.Services.AddLogging(logging =>
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 // Log application startup
 app.Logger.LogInformation("Starting up the application");
 
